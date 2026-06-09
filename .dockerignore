@@ -1,0 +1,9 @@
+target/
+.git/
+.github/
+.idea/
+.vscode/
+.env
+README.md
+infra/
+deployment/

@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: deployflow-api
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:deployflow}?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${DB_USERNAME:deployflow}
+    password: ${DB_PASSWORD:deployflow}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+    info:
+      access: read-only
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: DeployFlow API
+    description: DevOps-ready delivery incident tracking API for foodservice operations
+    version: 0.0.1
+
+logging:
+  level:
+    com.savithu.deployflow: INFO

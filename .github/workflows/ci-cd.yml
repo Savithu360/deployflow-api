@@ -1,0 +1,52 @@
+name: DeployFlow CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21 and cache Maven dependencies
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Run tests
+        run: mvn --batch-mode clean test
+
+      - name: Build application
+        run: mvn --batch-mode package -DskipTests
+
+      - name: Build Docker image
+        run: docker build --tag deployflow-api:${{ github.sha }} .
+
+  # Optional EC2 deployment template. Enable only after configuring the
+  # EC2_HOST, EC2_USER, EC2_SSH_KEY, DOCKER_USERNAME, and DOCKER_PASSWORD
+  # repository secrets and deciding how images will be published.
+  #
+  # deploy-to-ec2:
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #   needs: test-and-build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Deploy over SSH
+  #       uses: appleboy/ssh-action@v1
+  #       with:
+  #         host: ${{ secrets.EC2_HOST }}
+  #         username: ${{ secrets.EC2_USER }}
+  #         key: ${{ secrets.EC2_SSH_KEY }}
+  #         script: |
+  #           cd ~/DeployFlow-API
+  #           ./deployment/deploy.sh
