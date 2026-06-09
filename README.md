@@ -2,116 +2,256 @@
 
 **A DevOps-ready delivery incident tracking API for foodservice operations.**
 
-DeployFlow API is a Spring Boot REST API for tracking delivery and warehouse
-operation incidents, prepared for Docker, CI/CD, AWS EC2 deployment, monitoring,
-and infrastructure automation.
+DeployFlow API is a Spring Boot REST API for tracking delivery and warehouse operation incidents. It was built as a DevOps-focused portfolio project to demonstrate backend development, containerization, CI/CD, cloud deployment, monitoring, infrastructure preparation, automation, and troubleshooting documentation.
 
-## The Real-World Problem
+---
 
-Foodservice operations depend on reliable delivery, warehouse handling, vehicle
-availability, temperature control, and customer order accuracy. DeployFlow gives
-operations teams a simple way to record, prioritize, monitor, filter, and
-resolve incidents affecting those workflows.
+## Real-World Problem
 
-## Why This Project Was Built
+Foodservice and delivery operations depend on reliable warehouse handling, vehicle availability, route execution, temperature control, and customer order accuracy.
 
-This portfolio project demonstrates practical skills for a DevOps internship:
-backend development, containerization, CI/CD readiness, cloud deployment
-preparation, Infrastructure as Code, monitoring, troubleshooting, automation,
-and clear technical documentation.
+When incidents such as delivery delays, vehicle issues, temperature alerts, warehouse loading problems, missing items, or customer complaints occur, operations teams need a simple way to record, prioritize, monitor, and resolve those issues.
+
+DeployFlow API provides a backend incident tracking system for delivery and warehouse operations.
+
+---
+
+## Project Status
+
+| Area                                   | Status    |
+| -------------------------------------- | --------- |
+| Spring Boot REST API                   | Completed |
+| Local Docker deployment                | Verified  |
+| Docker Compose with MySQL              | Verified  |
+| GitHub Actions CI/CD                   | Verified  |
+| WSO2 Choreo cloud deployment           | Verified  |
+| Choreo Test-Key secured API access     | Verified  |
+| Spring Boot Actuator health monitoring | Verified  |
+| Dockerfile security scan fixes         | Completed |
+| AWS EC2 deployment scripts             | Prepared  |
+| Terraform EC2 infrastructure template  | Prepared  |
+
+---
 
 ## DevOps Concepts Demonstrated
 
-- CI/CD pipeline readiness with GitHub Actions
-- Multi-stage Docker containerization
-- Docker Compose application and MySQL environment
-- AWS EC2 deployment preparation
-- Infrastructure as Code with Terraform
-- Environment-variable configuration
-- Health checks with Spring Boot Actuator
-- Structured API errors and application logging
-- Troubleshooting documentation
-- Repeatable deployment scripts
+* CI/CD pipeline automation with GitHub Actions
+* Multi-stage Docker containerization
+* Docker Compose service orchestration
+* MySQL database integration for local containerized deployment
+* Cloud deployment using WSO2 Choreo
+* Environment-based runtime configuration
+* Spring Boot Actuator health checks
+* Runtime logging
+* Dockerfile security improvements
+* Non-root container execution
+* Container vulnerability scan readiness
+* AWS EC2 deployment preparation
+* Infrastructure as Code preparation with Terraform
+* Bash deployment automation
+* Troubleshooting documentation
+
+---
 
 ## Tech Stack
 
-Java 21, Spring Boot 3.5.14, Spring Web, Spring Data JPA, Validation,
-Actuator, MySQL 8.4, H2 for tests and the Choreo cloud demo, Maven, Docker,
-Docker Compose, GitHub Actions, Terraform, AWS EC2, and Bash.
+| Category                   | Technologies           |
+| -------------------------- | ---------------------- |
+| Backend                    | Java 21, Spring Boot   |
+| API                        | Spring Web, REST API   |
+| Database Access            | Spring Data JPA        |
+| Validation                 | Spring Validation      |
+| Monitoring                 | Spring Boot Actuator   |
+| Local Database             | MySQL                  |
+| Test / Cloud Demo Database | H2                     |
+| Build Tool                 | Maven                  |
+| Containerization           | Docker, Docker Compose |
+| CI/CD                      | GitHub Actions         |
+| Cloud Deployment           | WSO2 Choreo            |
+| Infrastructure Preparation | Terraform              |
+| Deployment Automation      | Bash                   |
+| Future AWS Target          | AWS EC2                |
 
-## Architecture
+---
+
+## Architecture Overview
 
 ```text
-HTTP Client
-    |
-Controller -> Service -> Repository -> MySQL
-    |           |
- Validation   Business rules and logging
-    |
-Global exception handler
+Client / Postman / Choreo Gateway
+        |
+        v
+Controller Layer
+        |
+        v
+Service Layer
+        |
+        v
+Repository Layer
+        |
+        v
+Database
 ```
 
-The code uses DTOs at the API boundary and keeps persistence entities inside
-the application. Local and Docker Compose deployments use MySQL, automated
-tests use H2, and the WSO2 Choreo cloud demo uses an isolated H2 profile.
+The application follows a clean layered architecture:
+
+```text
+controller  -> Handles REST API requests
+service     -> Handles business logic and logging
+repository  -> Handles database access
+entity      -> Defines persistence models
+dto         -> Defines request and response objects
+exception   -> Handles structured API errors
+config      -> Contains application configuration where needed
+```
+
+Deployment modes are separated clearly:
+
+| Environment            | Runtime                             | Database    |
+| ---------------------- | ----------------------------------- | ----------- |
+| Local Docker Compose   | Docker + Docker Compose             | MySQL       |
+| Automated Tests        | Maven test profile                  | H2          |
+| WSO2 Choreo Cloud Demo | Docker service on Choreo            | H2          |
+| AWS Preparation        | EC2 scripts and Terraform templates | MySQL-ready |
+
+---
 
 ## Folder Structure
 
 ```text
 .
-|-- .github/workflows/ci-cd.yml
+|-- .choreo/
+|   `-- component.yaml
+|-- .github/
+|   `-- workflows/
+|       `-- ci-cd.yml
 |-- deployment/
 |   |-- deploy.sh
 |   `-- ec2-setup.sh
-|-- infra/terraform/
-|   |-- main.tf
-|   |-- outputs.tf
-|   |-- variables.tf
-|   `-- README.md
-|-- scripts/log-summary-prompt.md
+|-- docs/
+|   `-- screenshots/
+|       |-- actuator-health-choreo.png
+|       |-- actuator-health-local-choreo-profile.png
+|       |-- choreo-build-success.png
+|       |-- choreo-deployment-active.png
+|       |-- docker-compose-healthy.png
+|       |-- github-actions-success.png
+|       |-- postman-create-incident-choreo.png
+|       |-- postman-list-incidents-choreo.png
+|       `-- postman-summary-choreo.png
+|-- infra/
+|   `-- terraform/
+|       |-- main.tf
+|       |-- outputs.tf
+|       |-- variables.tf
+|       `-- README.md
+|-- scripts/
+|   `-- log-summary-prompt.md
 |-- src/
-|   |-- main/java/com/savithu/deployflow/
-|   |   |-- controller/
-|   |   |-- dto/
-|   |   |-- entity/
-|   |   |-- exception/
-|   |   |-- repository/
-|   |   `-- service/
-|   |-- main/resources/application.yml
-|   |-- test/java/com/savithu/deployflow/
-|   `-- test/resources/application.yml
+|   |-- main/
+|   |   |-- java/com/savithu/deployflow/
+|   |   |   |-- controller/
+|   |   |   |-- dto/
+|   |   |   |-- entity/
+|   |   |   |-- exception/
+|   |   |   |-- repository/
+|   |   |   `-- service/
+|   |   `-- resources/
+|   |       |-- application.yml
+|   |       `-- application-choreo.yml
+|   `-- test/
+|       |-- java/com/savithu/deployflow/
+|       `-- resources/
+|           `-- application.yml
+|-- .dockerignore
 |-- .env.example
+|-- .gitignore
 |-- Dockerfile
 |-- docker-compose.yml
-`-- pom.xml
+|-- pom.xml
+`-- README.md
 ```
+
+---
 
 ## API Endpoints
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| GET | `/api/health` | Custom application health |
-| GET | `/actuator/health` | Actuator health details |
-| GET | `/actuator/info` | Application information |
-| POST | `/api/incidents` | Create an incident |
-| GET | `/api/incidents` | List all incidents |
-| GET | `/api/incidents/{id}` | Get an incident |
-| PUT | `/api/incidents/{id}` | Fully update an incident |
-| DELETE | `/api/incidents/{id}` | Delete an incident |
-| GET | `/api/incidents/status/{status}` | Filter by status |
-| GET | `/api/incidents/priority/{priority}` | Filter by priority |
-| GET | `/api/incidents/type/{incidentType}` | Filter by type |
-| PATCH | `/api/incidents/{id}/resolve` | Resolve an incident |
-| GET | `/api/incidents/summary` | Get operational counts |
+| Method | Endpoint                             | Purpose                           |
+| ------ | ------------------------------------ | --------------------------------- |
+| GET    | `/api/health`                        | Custom application health check   |
+| GET    | `/actuator/health`                   | Spring Boot Actuator health check |
+| GET    | `/actuator/info`                     | Application information           |
+| POST   | `/api/incidents`                     | Create a new incident             |
+| GET    | `/api/incidents`                     | List all incidents                |
+| GET    | `/api/incidents/{id}`                | Get an incident by ID             |
+| PUT    | `/api/incidents/{id}`                | Fully update an incident          |
+| DELETE | `/api/incidents/{id}`                | Delete an incident                |
+| GET    | `/api/incidents/status/{status}`     | Filter incidents by status        |
+| GET    | `/api/incidents/priority/{priority}` | Filter incidents by priority      |
+| GET    | `/api/incidents/type/{incidentType}` | Filter incidents by type          |
+| PATCH  | `/api/incidents/{id}/resolve`        | Resolve an incident               |
+| GET    | `/api/incidents/summary`             | Get operational incident counts   |
 
-Valid incident types are `DELIVERY_DELAY`, `TEMPERATURE_ALERT`,
-`VEHICLE_ISSUE`, `WAREHOUSE_LOADING_ISSUE`, `MISSING_ITEMS`,
-`CUSTOMER_COMPLAINT`, `ROUTE_BLOCKED`, and `OTHER`.
+---
 
-Priorities are `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`. Statuses are `OPEN`,
-`IN_PROGRESS`, `RESOLVED`, and `CANCELLED`.
+## Incident Fields
 
-## Sample Requests
+Each incident contains:
+
+```text
+id
+title
+description
+incidentType
+priority
+status
+location
+vehicleId
+reportedBy
+createdAt
+updatedAt
+resolvedAt
+```
+
+---
+
+## Incident Types
+
+```text
+DELIVERY_DELAY
+TEMPERATURE_ALERT
+VEHICLE_ISSUE
+WAREHOUSE_LOADING_ISSUE
+MISSING_ITEMS
+CUSTOMER_COMPLAINT
+ROUTE_BLOCKED
+OTHER
+```
+
+---
+
+## Priorities
+
+```text
+LOW
+MEDIUM
+HIGH
+CRITICAL
+```
+
+---
+
+## Status Values
+
+```text
+OPEN
+IN_PROGRESS
+RESOLVED
+CANCELLED
+```
+
+---
+
+## Sample Create Incident Request
 
 ```json
 {
@@ -126,40 +266,75 @@ Priorities are `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`. Statuses are `OPEN`,
 }
 ```
 
+---
+
+## Sample Create Incident Response
+
 ```json
 {
-  "title": "Cold storage temperature alert",
-  "description": "Temperature exceeded safe range during loading.",
-  "incidentType": "TEMPERATURE_ALERT",
-  "priority": "CRITICAL",
+  "id": 1,
+  "title": "Truck delayed due to road closure",
+  "description": "Delivery truck was delayed due to an unexpected road closure.",
+  "incidentType": "DELIVERY_DELAY",
+  "priority": "HIGH",
   "status": "OPEN",
-  "location": "Warehouse Cold Storage Zone A",
-  "vehicleId": "TRUCK-218",
-  "reportedBy": "Warehouse Supervisor"
+  "location": "Colombo Distribution Route 04",
+  "vehicleId": "TRUCK-102",
+  "reportedBy": "Operations Team",
+  "createdAt": "2026-06-09T12:34:32.236379",
+  "updatedAt": "2026-06-09T12:34:32.236379",
+  "resolvedAt": null
 }
 ```
 
-Example summary:
+---
+
+## Sample Summary Response
 
 ```json
 {
-  "totalIncidents": 12,
-  "openIncidents": 5,
-  "inProgressIncidents": 2,
-  "criticalIncidents": 2,
-  "resolvedIncidents": 4,
-  "cancelledIncidents": 1
+  "totalIncidents": 2,
+  "openIncidents": 1,
+  "inProgressIncidents": 0,
+  "criticalIncidents": 0,
+  "resolvedIncidents": 1,
+  "cancelledIncidents": 0
 }
 ```
 
-Errors include a timestamp, HTTP status, error, message, request path, and field
-validation errors when applicable.
+---
+
+## Error Response Format
+
+Validation and application errors return structured responses.
+
+Example:
+
+```json
+{
+  "timestamp": "2026-06-09T12:40:10",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Incident not found with id: 99",
+  "path": "/api/incidents/99"
+}
+```
+
+---
 
 ## Run Locally Without Docker
 
-Requirements: Java 21, Maven 3.6.3 or newer, and MySQL.
+Requirements:
 
-Create the database and user, then set environment variables. PowerShell:
+```text
+Java 21
+Maven 3.6.3 or newer
+MySQL
+```
+
+Set environment variables.
+
+PowerShell:
 
 ```powershell
 $env:DB_HOST="localhost"
@@ -167,180 +342,380 @@ $env:DB_PORT="3306"
 $env:DB_NAME="deployflow"
 $env:DB_USERNAME="deployflow"
 $env:DB_PASSWORD="your-password"
+
 mvn clean test
 mvn spring-boot:run
 ```
 
-The application runs at `http://localhost:8080`.
+The application runs at:
 
-## Run With Docker
+```text
+http://localhost:8080
+```
 
-No `.env` file is required for a quick local demonstration because Compose uses
-isolated development credentials. Change these placeholder values before any
-remote deployment and keep real values outside version control.
+---
+
+## Run Locally With Docker Compose
+
+The easiest local setup is Docker Compose because it starts both the Spring Boot API and MySQL.
 
 ```bash
 docker compose up --build
+```
+
+Check running containers:
+
+```bash
 docker compose ps
+```
+
+View application logs:
+
+```bash
 docker compose logs -f app
 ```
 
-Stop containers with `docker compose down`. Add `--volumes` only when you
-intentionally want to delete local MySQL data.
+View database logs:
 
-## Cloud Demo Deployment with WSO2 Choreo
+```bash
+docker compose logs -f database
+```
 
-WSO2 Choreo runs the application with the `choreo` Spring profile. This profile
-uses an in-memory H2 database so the portfolio API can be demonstrated without
-provisioning an external cloud database.
+Stop containers:
 
-Configure this environment variable in the Choreo component:
+```bash
+docker compose down
+```
+
+Stop containers and remove local MySQL data:
+
+```bash
+docker compose down -v
+```
+
+Local Docker URLs:
+
+```text
+http://localhost:8080/api/health
+http://localhost:8080/actuator/health
+http://localhost:8080/api/incidents
+http://localhost:8080/api/incidents/summary
+```
+
+---
+
+## WSO2 Choreo Cloud Deployment
+
+DeployFlow API is deployed on **WSO2 Choreo** as a Docker-based cloud service.
+
+The Choreo deployment uses the `choreo` Spring profile:
 
 ```text
 SPRING_PROFILES_ACTIVE=choreo
 ```
 
-Choreo may provide a `PORT` environment variable. The application uses it when
-present and otherwise listens on port `8080`. The same Docker image can also be
-tested manually with:
+The `choreo` profile uses an in-memory H2 database. This keeps the cloud demo simple and avoids provisioning an external database for the portfolio demonstration.
 
-```bash
-docker run --rm -p 8080:8080 \
-  -e SPRING_PROFILES_ACTIVE=choreo \
-  deployflow-api:local
+### Choreo Base URL
+
+Development invoke URL:
+
+```text
+https://6aca36c4-a3f8-47a3-a20c-ecb2e36d995d-dev.e1-us-east-azure.choreoapis.dev/deployflow-api/deployflow-api/v1.0
 ```
 
-After deployment, verify:
+### Choreo Authentication
 
-- Health check: `/actuator/health`
-- API test endpoint: `/api/incidents/summary`
+Choreo protects the development endpoint using a generated `Test-Key`.
 
-The H2 database is intentionally temporary: cloud demo data is lost when the
-Choreo container restarts or is redeployed. This is suitable for a portfolio
-demonstration, not durable production storage.
+For Postman testing, add this header:
 
-Deployment modes are intentionally separated:
+```text
+Test-Key: <CHOREO_GENERATED_TEST_KEY>
+```
 
-- Local deployment: Docker Compose and MySQL
-- Cloud demo deployment: WSO2 Choreo and H2
-- AWS deployment readiness: EC2 scripts and Terraform templates are included
+Do not commit or share the real Test-Key.
 
-## Test With Postman
+### Verified Choreo Endpoints
 
-1. Create a collection with base URL `http://localhost:8080`.
-2. Send `GET /api/health` and confirm `status` is `UP`.
-3. Send `POST /api/incidents` with `Content-Type: application/json` and one of
-   the sample bodies.
-4. Copy the returned `id` and test GET, PUT, and
-   `PATCH /api/incidents/{id}/resolve`.
-5. Test the filter and summary endpoints.
-6. Send an invalid enum such as `"priority": "URGENT"` to capture the
-   structured `400 Bad Request` response.
+Use the Choreo base URL plus the following paths:
 
-## GitHub Actions
+```text
+GET /actuator/health
+GET /api/health
+GET /api/incidents
+GET /api/incidents/summary
+POST /api/incidents
+PATCH /api/incidents/{id}/resolve
+```
 
-The workflow runs for pushes and pull requests targeting `main`. It configures
-Java 21, caches Maven dependencies, runs tests, packages the application, and
-builds a Docker image.
+Example:
 
-Later configuration:
+```text
+GET https://6aca36c4-a3f8-47a3-a20c-ecb2e36d995d-dev.e1-us-east-azure.choreoapis.dev/deployflow-api/deployflow-api/v1.0/actuator/health
+```
 
-- Enable the commented EC2 deployment job only after testing it.
-- Add `EC2_HOST`, `EC2_USER`, and `EC2_SSH_KEY` as repository secrets.
-- Add `DOCKER_USERNAME` and `DOCKER_PASSWORD` if publishing images.
-- Add registry login, image push, environment protection, and approval rules.
-- Never place credentials directly in the workflow file.
+---
 
-## AWS EC2 Preparation
+## Docker Security Improvements for Choreo
 
-1. Provision Ubuntu EC2 and restrict SSH to your public IP.
-2. Connect using your private key.
-3. Clone the repository and run `deployment/ec2-setup.sh`.
-4. Log out and back in so Docker group membership takes effect.
-5. Configure a private `.env` on the server.
-6. Run `deployment/deploy.sh` from the repository root.
-7. Confirm `http://EC2_PUBLIC_IP:8080/actuator/health`.
+The Dockerfile was updated to satisfy Choreo security requirements.
 
-For a stronger production deployment, use HTTPS, a reverse proxy or load
-balancer, restricted networking, RDS, managed secrets, backups, and monitoring.
+Key improvements:
 
-## Terraform
+* Uses a minimal Java runtime image
+* Runs as a numeric non-root user
+* Uses `USER 10001`
+* Avoids unnecessary OS packages
+* Passes Choreo Dockerfile scan
+* Passes container vulnerability scanning with no high or critical vulnerabilities
 
-The template in `infra/terraform` creates an EC2 instance and security group.
-Before use, configure AWS CLI credentials outside the repository, choose a
-region-specific Ubuntu AMI, provide an existing key pair, and restrict
-`ssh_cidr` to your public IP. See its dedicated README for commands.
+This is important because Choreo requires the container user to be a numeric user ID between `10000` and `20000`.
 
-## Monitoring
+---
+
+## GitHub Actions CI/CD
+
+The GitHub Actions workflow runs on pushes and pull requests to `main`.
+
+The pipeline:
+
+```text
+1. Checks out source code
+2. Sets up Java
+3. Caches Maven dependencies
+4. Runs tests
+5. Packages the Spring Boot application
+6. Builds the Docker image
+```
+
+Workflow file:
+
+```text
+.github/workflows/ci-cd.yml
+```
+
+Optional EC2 deployment steps are documented but kept disabled until real AWS deployment is configured.
+
+---
+
+## AWS EC2 Deployment Preparation
+
+AWS EC2 deployment scripts are included for future AWS deployment.
+
+Files:
+
+```text
+deployment/ec2-setup.sh
+deployment/deploy.sh
+```
+
+The EC2 setup script prepares an Ubuntu server with Docker and Docker Compose.
+
+The deployment script is designed to:
+
+```text
+pull latest code
+stop old containers
+rebuild containers
+start containers
+show logs
+```
+
+Expected future AWS health URL:
+
+```text
+http://EC2_PUBLIC_IP:8080/actuator/health
+```
+
+AWS deployment is prepared, but the currently verified cloud deployment is on WSO2 Choreo.
+
+---
+
+## Terraform Infrastructure Template
+
+Terraform files are included in:
+
+```text
+infra/terraform/
+```
+
+The template includes:
+
+```text
+AWS provider placeholder
+EC2 instance resource
+Security group resource
+SSH port 22
+Application port 8080
+HTTP port 80
+Variables
+Outputs
+```
+
+Before using Terraform, configure AWS credentials outside the repository and update variables safely.
+
+---
+
+## Monitoring and Health Checks
+
+Local health checks:
 
 ```bash
 curl http://localhost:8080/api/health
 curl http://localhost:8080/actuator/health
 curl http://localhost:8080/actuator/info
-docker compose ps
+```
+
+Docker logs:
+
+```bash
 docker compose logs --tail=100 app
 docker compose logs --tail=100 database
 ```
 
+Choreo health check:
+
+```text
+GET /actuator/health
+Header: Test-Key: <CHOREO_GENERATED_TEST_KEY>
+```
+
+---
+
 ## Troubleshooting
 
-| Problem | Checks and fixes |
-|---|---|
-| MySQL connection refused | Confirm MySQL is running, `DB_HOST` is correct, credentials match, and the database health check passes. Use `database` as host inside Compose, not `localhost`. |
-| Port 8080 already in use | Stop the conflicting process/container or change the host-side Compose port. |
-| Port 3306 already in use | Stop local MySQL or map the Compose database to another host port. |
-| Docker build failed | Check network access, Docker disk space, Java/Maven build errors, and retry `docker compose build --no-cache`. |
-| Maven test failure | Run `mvn clean test`, inspect the first failure, and confirm Java 21 with `java -version`. Tests use H2 and do not require MySQL. |
-| GitHub Actions secret missing | Add the named repository secret or keep the optional deployment job disabled. |
-| EC2 permission denied | Confirm the SSH user, key permissions, instance key pair, and security-group source IP. |
-| App starts before database | Inspect the database health check. Compose waits for `service_healthy` before starting the app. |
-| Environment variable missing | Compare the environment with `.env.example`; do not add spaces around `=`. |
-| Actuator endpoint unavailable | Confirm the app is running and `health,info` remain exposed in `application.yml`. |
-| Invalid enum value | Use uppercase values exactly as listed in the API section. |
+| Problem                       | Cause                            | Fix                                                              |
+| ----------------------------- | -------------------------------- | ---------------------------------------------------------------- |
+| MySQL connection refused      | Database not ready or wrong host | Use `database` as DB host inside Docker Compose                  |
+| Port 8080 already in use      | Another app is using the port    | Stop the process or change host port                             |
+| Port 3306 already in use      | Local MySQL is already running   | Map MySQL to host port `3307`                                    |
+| Docker build failed           | Dependency or image issue        | Run `docker build -t deployflow-api:local .` and inspect logs    |
+| Maven not recognized          | Maven not installed locally      | Use Maven through Docker or install Maven                        |
+| GitHub Actions failed         | Test/build error                 | Open Actions logs and fix first failing step                     |
+| Choreo Dockerfile scan failed | Non-compliant container user     | Use numeric non-root user such as `USER 10001`                   |
+| Choreo Trivy scan failed      | Vulnerable OS/package layer      | Use minimal image and remove unnecessary packages                |
+| Choreo returns 401            | Missing or expired Test-Key      | Generate a new Choreo Test-Key and add it as `Test-Key` header   |
+| Choreo returns 404            | Wrong endpoint path              | Add `/actuator/health`, `/api/health`, or another valid API path |
+| Actuator endpoint unavailable | Endpoint not exposed             | Check actuator exposure config in `application.yml`              |
+| Invalid enum value            | Wrong status/type/priority value | Use uppercase enum values exactly as documented                  |
 
-## Future Improvements
-
-- Authentication and role-based authorization
-- Pagination, sorting, and date-range search
-- OpenAPI/Swagger documentation
-- Flyway database migrations
-- RDS, HTTPS, DNS, and load-balancer integration
-- Metrics dashboards and alerting
-- Audit history and incident comments
-- Image registry publishing and automated rollback
-
-## Suggested Screenshots
-
-- Successful `mvn test` output
-- Running Docker Compose services and healthy status
-- Postman create, resolve, filter, summary, and validation responses
-- Actuator health and info responses
-- GitHub Actions workflow success
-- Terraform plan summary
-- EC2 terminal with healthy containers
-- Application health response through the EC2 public address
-
-## Portfolio Text
-
-**CV description:** Built a Java 21 Spring Boot incident tracking REST API for
-foodservice delivery operations, with MySQL persistence, automated tests,
-Docker Compose, GitHub Actions CI/CD preparation, AWS EC2 deployment scripts,
-Terraform infrastructure templates, Actuator health checks, and troubleshooting
-documentation.
-
-**GitHub description:** DevOps-ready Spring Boot API for tracking delivery and
-warehouse incidents, containerized with Docker and prepared for CI/CD, AWS EC2,
-Terraform, and monitoring.
-
-**Topics:** `java`, `spring-boot`, `rest-api`, `mysql`, `docker`,
-`docker-compose`, `github-actions`, `aws`, `ec2`, `terraform`, `devops`,
-`monitoring`, `portfolio-project`
+---
 
 ## Screenshots
 
-Add final screenshots to a future `docs/screenshots` directory and replace this
-section with a compact project walkthrough.
+Project verification screenshots are stored in:
+
+```text
+docs/screenshots/
+```
+
+### Choreo Deployment Active
+
+![Choreo Deployment Active](docs/screenshots/choreo-deployment-active.png)
+
+### Choreo Build Success
+
+![Choreo Build Success](docs/screenshots/choreo-build-success.png)
+
+### GitHub Actions Success
+
+![GitHub Actions Success](docs/screenshots/github-actions-success.png)
+
+### Docker Compose Healthy
+
+![Docker Compose Healthy](docs/screenshots/docker-compose-healthy.png)
+
+### Local Choreo Profile Health Check
+
+![Local Choreo Profile Health Check](docs/screenshots/actuator-health-local-choreo-profile.png)
+
+### Choreo Actuator Health
+
+![Choreo Actuator Health](docs/screenshots/actuator-health-choreo.png)
+
+### Create Incident on Choreo
+
+![Create Incident on Choreo](docs/screenshots/postman-create-incident-choreo.png)
+
+### List Incidents on Choreo
+
+![List Incidents on Choreo](docs/screenshots/postman-list-incidents-choreo.png)
+
+### Incident Summary on Choreo
+
+![Incident Summary on Choreo](docs/screenshots/postman-summary-choreo.png)
+
+> Note: Choreo Test-Key values are hidden before screenshots are committed.
+
+---
+
+## Future Improvements
+
+* Deploy to AWS EC2 using the included scripts
+* Add AWS RDS for managed MySQL
+* Add HTTPS with a custom domain
+* Add authentication and role-based authorization
+* Add pagination and sorting
+* Add OpenAPI/Swagger documentation
+* Add Flyway database migrations
+* Add Testcontainers for production-like integration testing
+* Add centralized logging and metrics dashboards
+* Add automated rollback strategy
+* Publish Docker image to a container registry
+
+---
+
+## Job Role Alignment
+
+| DevOps Intern Requirement | How DeployFlow API Demonstrates It                                              |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| CI/CD pipelines           | GitHub Actions workflow runs tests, packages the app, and builds a Docker image |
+| Cloud deployment          | Deployed on WSO2 Choreo as a cloud-hosted service                               |
+| AWS cloud readiness       | EC2 setup scripts and Terraform templates included                              |
+| Infrastructure as Code    | Terraform template prepared for AWS EC2                                         |
+| Containerization          | Multi-stage Dockerfile and Docker Compose setup                                 |
+| Monitoring                | Spring Boot Actuator health and info endpoints                                  |
+| Troubleshooting           | README includes common issues and fixes                                         |
+| Automation                | Bash scripts and GitHub Actions workflow                                        |
+| Documentation             | Setup, deployment, API, and troubleshooting documentation included              |
+| AI-driven automation      | Log analysis prompt included in `scripts/log-summary-prompt.md`                 |
+
+---
+
+## Portfolio Summary
+
+**DeployFlow API – Delivery Incident Tracking System**
+
+Built a DevOps-ready Spring Boot REST API for tracking delivery and warehouse operation incidents. The project includes Docker containerization, Docker Compose with MySQL, GitHub Actions CI/CD, WSO2 Choreo cloud deployment, Actuator health monitoring, Choreo Test-Key secured API access, AWS EC2 deployment scripts, Terraform infrastructure templates, and troubleshooting documentation.
+
+---
+
+## Repository Topics
+
+```text
+java
+spring-boot
+rest-api
+mysql
+h2
+docker
+docker-compose
+github-actions
+wso2-choreo
+aws
+ec2
+terraform
+devops
+monitoring
+ci-cd
+portfolio-project
+```
+
+---
 
 ## Author
 
-Savithu Pemachandra
+**Savithu Pemachandra**
+
+GitHub: [Savithu360](https://github.com/Savithu360)
