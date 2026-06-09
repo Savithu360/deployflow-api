@@ -6,24 +6,23 @@ COPY pom.xml .
 RUN mvn -B dependency:go-offline
 
 COPY src ./src
+COPY docker/HealthCheck.java /tmp/HealthCheck.java
 RUN mvn -B clean package -DskipTests
+RUN javac -d /healthcheck /tmp/HealthCheck.java
 
 
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && groupadd --gid 10001 deployflow \
-    && useradd --uid 10001 --gid 10001 --system --create-home deployflow
+RUN addgroup --gid 10001 --system deployflow \
+    && adduser --uid 10001 --system --disabled-password --no-create-home \
+        --ingroup deployflow deployflow
 
-COPY --from=build /workspace/target/deployflow-api-*.jar app.jar
+COPY --from=build --chown=10001:10001 /workspace/target/deployflow-api-*.jar app.jar
+COPY --from=build --chown=10001:10001 /healthcheck /app/healthcheck
 
-RUN chown -R 10001:10001 /app
-
-USER 10001
+USER 10001:10001
 
 EXPOSE 8080
 
