@@ -36,8 +36,8 @@ and clear technical documentation.
 ## Tech Stack
 
 Java 21, Spring Boot 3.5.14, Spring Web, Spring Data JPA, Validation,
-Actuator, MySQL 8.4, H2 for tests, Maven, Docker, Docker Compose,
-GitHub Actions, Terraform, AWS EC2, and Bash.
+Actuator, MySQL 8.4, H2 for tests and the Choreo cloud demo, Maven, Docker,
+Docker Compose, GitHub Actions, Terraform, AWS EC2, and Bash.
 
 ## Architecture
 
@@ -52,7 +52,8 @@ Global exception handler
 ```
 
 The code uses DTOs at the API boundary and keeps persistence entities inside
-the application. Production and Docker use MySQL; automated tests use H2.
+the application. Local and Docker Compose deployments use MySQL, automated
+tests use H2, and the WSO2 Choreo cloud demo uses an isolated H2 profile.
 
 ## Folder Structure
 
@@ -186,6 +187,43 @@ docker compose logs -f app
 
 Stop containers with `docker compose down`. Add `--volumes` only when you
 intentionally want to delete local MySQL data.
+
+## Cloud Demo Deployment with WSO2 Choreo
+
+WSO2 Choreo runs the application with the `choreo` Spring profile. This profile
+uses an in-memory H2 database so the portfolio API can be demonstrated without
+provisioning an external cloud database.
+
+Configure this environment variable in the Choreo component:
+
+```text
+SPRING_PROFILES_ACTIVE=choreo
+```
+
+Choreo may provide a `PORT` environment variable. The application uses it when
+present and otherwise listens on port `8080`. The same Docker image can also be
+tested manually with:
+
+```bash
+docker run --rm -p 8080:8080 \
+  -e SPRING_PROFILES_ACTIVE=choreo \
+  deployflow-api:local
+```
+
+After deployment, verify:
+
+- Health check: `/actuator/health`
+- API test endpoint: `/api/incidents/summary`
+
+The H2 database is intentionally temporary: cloud demo data is lost when the
+Choreo container restarts or is redeployed. This is suitable for a portfolio
+demonstration, not durable production storage.
+
+Deployment modes are intentionally separated:
+
+- Local deployment: Docker Compose and MySQL
+- Cloud demo deployment: WSO2 Choreo and H2
+- AWS deployment readiness: EC2 scripts and Terraform templates are included
 
 ## Test With Postman
 

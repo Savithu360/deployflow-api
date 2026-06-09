@@ -1,0 +1,31 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  datasource:
+    url: ${CHOREO_DB_URL:jdbc:h2:mem:deployflowdb;DB_CLOSE_DELAY=-1}
+    driver-class-name: org.h2.Driver
+    username: ${CHOREO_DB_USERNAME:sa}
+    password: ${CHOREO_DB_PASSWORD:}
+  h2:
+    console:
+      enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+    info:
+      access: read-only
+  info:
+    env:
+      enabled: true
